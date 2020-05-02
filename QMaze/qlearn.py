@@ -18,33 +18,42 @@ class QLearn(object):
         # things that can be done, presented as a list of integers
         self.actions = actions
 
-        def get_q(self, state, action):
-            # searches Q table for (state,action) and returns 0 if it doesn't exist
-            return self.q.get((state, action), 0.0)
+    def get_q(self, state, action):
+        # searches Q table for (state,action) and returns 0 if it doesn't exist
+        return self.q.get((state, action), 0.0)
 
-        def learn_q(self, state, action, reward, max_future_reward):
+    def learn_q(self, state, action, reward, max_future_reward):
 
-            # get current q value for (state, action) and return None if it doesn't exist yet
-            oldq = self.q.get((state, action), None)
+        # get current q value for (state, action) and return None if it doesn't exist yet
+        oldq = self.q.get((state, action), None)
 
-            if oldq == None:
-                self.q[(state, action)] = reward
+        if oldq == None:
+            self.q[(state, action)] = reward
+        else:
+            self.q[(state, action)] = (1 - self.alpha) * oldq + self.alpha * (
+                reward + self.gamma * max_future_reward
+            )
+
+    def choose_action(self, state):
+        if random.random() < self.c:
+            self.c = 0.999 * self.c
+            # print("c= ", self.c)
+            return random.choice(self.actions)
+        else:
+            q = [self.get_q(state, a) for a in self.actions]
+            maxQ = max(q)
+            count = q.count(maxQ)
+
+            if count > 1:
+                best = [i for i in range(len(self.actions)) if q[i] == maxQ]
+                i = random.choice(best)
             else:
-                self.q[(state, action)] = (1 - self.alpha) * oldq + self.alpha * (
-                    reward + self.gamma * max_future_reward
-                )
+                i = q.index(maxQ)
 
-        def choose_action(self, state):
-            if random.random() < c:
-                return random.choice(self.actions)
-            else:
-                qmax = max([self.q.get(state, a) for a in self.actions])
-                acceptable_actions = []
-                for a in actions:
-                    if self.q.get(state, a) == qmax:
-                        acceptable_actions.append(a)
-                return random.choice(acceptable_actions)
+            action = self.actions[i]
+            return action
 
-        def learn(self, state1, action1, reward, state2):
-            max_future_reward = max([self.q.get(state2, a) for a in self.actions])
-            self.learn_q(state1, action1, reward, max_future_reward)
+    def learn(self, state1, action1, reward, state2):
+        max_future_reward = max([self.get_q(state2, a) for a in self.actions])
+        # print("max future q: ", max_future_reward)
+        self.learn_q(state1, action1, reward, max_future_reward)
