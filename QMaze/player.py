@@ -1,25 +1,25 @@
-import numpy as np
 import qlearn
 
 
 class Player(object):
-    def __init__(self, actions):
+    def __init__(self, actions, c=0.3, alpha=0.7, gamma=0.5, cdecay=0.999):
         self.actions = actions
-        self.ai = qlearn.QLearn(actions, c=0.3, alpha=0.7, gamma=0.5)
+        self.ai = qlearn.QLearn(actions, c=c, alpha=alpha, gamma=gamma)
 
     def new_game(self):
         self.last_state = None
         self.last_action = None
 
     def update(self, board, player_position, goal_position):
-        reward = 0
+        reward = -1
         state = []
         for i in board:
             for j in i:
                 state.append(j)
 
         # state = [board, player_position, goal_position]
-        state = state + player_position + goal_position
+        # state = state + player_position + goal_position
+        state = player_position + goal_position
         string_state = [str(i) for i in state]
         a_string = "".join(string_state)
         state = int(a_string)
@@ -29,7 +29,6 @@ class Player(object):
             if self.last_state is not None:
                 self.ai.learn(self.last_state, self.last_action, reward, state)
             self.last_state = None
-            print("Lost")
             return "end"
 
         if player_position == goal_position:
@@ -37,7 +36,6 @@ class Player(object):
             if self.last_state is not None:
                 self.ai.learn(self.last_state, self.last_action, reward, state)
             self.last_state = None
-            print("Win")
             return "end"
 
         if self.last_state is not None:
@@ -48,11 +46,11 @@ class Player(object):
         self.last_action = action
 
         return(self.last_action)
-    def output_table(self):
-        with open("qtable.txt", "w") as f:
+    def output_table(self, plays):
+        with open(f"qtable-{plays}.txt", "w+") as f:
             f.truncate(0)
             for i in self.ai.q:
                 f.write(str(i))
-                f.write(" : ")
+                f.write(":")
                 f.write(str(self.ai.q[i]))
                 f.write("\n")

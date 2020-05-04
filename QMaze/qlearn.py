@@ -2,13 +2,16 @@ import random
 
 
 class QLearn(object):
-    def __init__(self, actions, c=0.1, alpha=0.2, gamma=0.9):
+    def __init__(self, actions, q=None, c=0.1, alpha=0.2, gamma=0.9, cdecay=0.999):
         # table of [state,action] pairs and Q values
-        self.q = {}
+        if q is None:
+            self.q = {}
+        else:
+            self.q = q
 
         # probability to randomly select an action instead of choosing highest Q value
         self.c = c
-
+        self.cdecay = cdecay
         # adoption rate of new Q values
         self.alpha = alpha
 
@@ -36,7 +39,7 @@ class QLearn(object):
 
     def choose_action(self, state):
         if random.random() < self.c:
-            self.c = 0.999 * self.c
+            self.c = self.cdecay * self.c
             # print("c= ", self.c)
             return random.choice(self.actions)
         else:

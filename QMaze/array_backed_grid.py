@@ -6,8 +6,8 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (252, 186, 3)
 
-WIDTH = 20
-HEIGHT = 20
+WIDTH = 30
+HEIGHT = 30
 
 MARGIN = 5
 
@@ -17,17 +17,15 @@ def display(grids):
 
     pygame.init()
 
-    WINDOW_SIZE = [25 * grid_width, 25 * grid_height]
+    WINDOW_SIZE = [(WIDTH + MARGIN) * grid_width, (HEIGHT + MARGIN) * grid_height]
     screen = pygame.display.set_mode(WINDOW_SIZE)
 
-    pygame.display.set_caption("Array Backed Grid")
+    pygame.display.set_caption("Qleaning Pathfinder")
 
     done = False
 
-    # Used to manage how fast the screen updates
     clock = pygame.time.Clock()
 
-    # -------- Main Program Loop -----------
     for grid in grids:
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
@@ -51,6 +49,6 @@ def display(grids):
                                   WIDTH,
                                   HEIGHT])
 
-        clock.tick(3)
+        clock.tick(4)
         pygame.display.flip()
     pygame.quit()
