@@ -15,9 +15,15 @@ def start_game(maze_template, player, delay=0, output=False):
     # player_position = [1,1]
     # goal_position = [1,3]
     while maze_template[player_position[0], player_position[1]] == 3:
-        player_position = [random.randint(1, MAP_SIZE - 2), random.randint(1, MAP_SIZE - 2)]
+        player_position = [
+            random.randint(1, MAP_SIZE - 2),
+            random.randint(1, MAP_SIZE - 2),
+        ]
     while maze_template[goal_position[0], goal_position[1]] != 0:
-        goal_position = [random.randint(1, MAP_SIZE - 2), random.randint(1, MAP_SIZE - 2)]
+        goal_position = [
+            random.randint(1, MAP_SIZE - 2),
+            random.randint(1, MAP_SIZE - 2),
+        ]
 
     maze_display = np.copy(maze_template)
 
@@ -35,7 +41,10 @@ def start_game(maze_template, player, delay=0, output=False):
         new_goal_position[1] = goal_position[1] + random.choice([-1, 1, 0])
         # goal_position[0] += 1
         # goal_position[1] += 1
-        if maze_template[new_goal_position[0], new_goal_position[1]] != 3 and goal_position != player_position:
+        if (
+            maze_template[new_goal_position[0], new_goal_position[1]] != 3
+            and goal_position != player_position
+        ):
             goal_position = new_goal_position
         maze_display = np.copy(maze_template)
         maze_display[goal_position[0], goal_position[1]] = 2
@@ -46,7 +55,7 @@ def start_game(maze_template, player, delay=0, output=False):
         action = player.update(maze_template, player_position, goal_position)
         if i > 100:
             if output:
-                a = 1/0
+                a = 1 / 0
             else:
                 action = "end"
         if action == "left":
@@ -70,8 +79,7 @@ def start_game(maze_template, player, delay=0, output=False):
             display_grids.append(maze_display)
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     training_steps = 40000
     actions = ["left", "right", "up", "down"]
@@ -88,14 +96,18 @@ if __name__ == '__main__':
     maze_template[3:11, 11] = 3
     maze_template[9, 5:10] = 3
     for i in range(15):
-        maze_template[random.randint(1, MAP_SIZE - 2), random.randint(1, MAP_SIZE - 2)] = 3
+        maze_template[
+            random.randint(1, MAP_SIZE - 2), random.randint(1, MAP_SIZE - 2)
+        ] = 3
 
     print("Training Start")
     for i in range(training_steps + 1):
         if i % 1000 == 0:
             training_player.output_table(i)
             print(i)
-        start_game(delay=0, output=False, maze_template=maze_template, player=training_player)
+        start_game(
+            delay=0, output=False, maze_template=maze_template, player=training_player
+        )
     print("Training Complete")
 
     print(f"--- {training_steps} Games Completed ---")
@@ -111,7 +123,9 @@ if __name__ == '__main__':
             t = True
             while t:
                 try:
-                    start_game(delay=0, output=True, maze_template=maze_template, player=ai)
+                    start_game(
+                        delay=0, output=True, maze_template=maze_template, player=ai
+                    )
                     t = False
                 except:
                     pass

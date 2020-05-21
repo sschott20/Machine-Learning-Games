@@ -20,11 +20,15 @@ if __name__ == "__main__":
     maze_template[3:11, 11] = 3
     maze_template[9, 5:10] = 3
     for i in range(10):
-        maze_template[random.randint(1, MAP_SIZE - 2), random.randint(1, MAP_SIZE - 2)] = 3
+        maze_template[
+            random.randint(1, MAP_SIZE - 2), random.randint(1, MAP_SIZE - 2)
+        ] = 3
 
     print("Training Start")
     for i in range(training_steps):
-        start_game(delay=0, output=False, maze_template=maze_template, player=training_player)
+        start_game(
+            delay=0, output=False, maze_template=maze_template, player=training_player
+        )
 
     training_player.output_table(training_steps)
     print("Training Complete")
@@ -35,4 +39,6 @@ if __name__ == "__main__":
     smart_player = smart_player.Player(actions, qfile="qtable-10000.txt")
     for i in range(4):
         print("Game: ", i + 1)
-        start_game(delay=0, output=True, maze_template=maze_template, player=smart_player)
+        start_game(
+            delay=0, output=True, maze_template=maze_template, player=smart_player
+        )
